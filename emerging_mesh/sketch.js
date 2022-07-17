@@ -5,21 +5,24 @@ let pt_num;
 let seed;
 let circleMin;
 let circleMax;
+let widthOffset;
+let heightOffset;
 
 let BACKGROUND = (0, 0, 0);
 let MOVE_SPEED = 1;
-let WIDTH_OFFSET = 50;
-let HEIGHT_OFFSET = 50;
 let LINE_ALPHA = 1;
 let COLOR_MIN = 0;
 let COLOR_MAX = 255;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(getCanvasSize()[0], getCanvasSize()[1]);
   background(BACKGROUND);
   angleMode(DEGREES);
   randomSeed(seed);
   strokeWeight(2);
+
+  widthOffset = getCanvasOffset()[0];
+  heightOffset = getCanvasOffset()[1];
 
   resetLoop();
   makePointArray();
@@ -69,8 +72,8 @@ function touchStarted() {
 
 class SetPoint {
   constructor() {
-    this.centerX = random(WIDTH_OFFSET, width - WIDTH_OFFSET);
-    this.centerY = random(HEIGHT_OFFSET, height - HEIGHT_OFFSET);
+    this.centerX = random(widthOffset, width - widthOffset);
+    this.centerY = random(heightOffset, height - heightOffset);
     this.degree = random(360);
     this.radius = random(circleMin, circleMax);
     this.r = floor(random(COLOR_MIN, COLOR_MAX));
@@ -119,4 +122,32 @@ const resetLoop = () => {
   pt_num = floor(random(20, 80));
   circleMin = random(1, 300);
   circleMax = random(200, 600);
+};
+
+const getDisplayMin = () => {
+  let wid = getCanvasSize()[0];
+  let hei = getCanvasSize()[1];
+
+  return wid > hei ? hei : wid;
+};
+
+const getCanvasSize = () => {
+  let wid = displayWidth;
+  let hei = displayHeight;
+
+  wid -= wid * 0.2;
+  hei -= hei * 0.2;
+
+  return [wid, hei];
+};
+
+const getCanvasOffset = () => {
+  let min = getDisplayMin();
+  let wid = getCanvasSize()[0];
+  let hei = getCanvasSize()[1];
+
+  wid = (wid - min * 0.9) / 2;
+  hei = (hei - min * 0.9) / 2;
+
+  return [wid, hei];
 };
