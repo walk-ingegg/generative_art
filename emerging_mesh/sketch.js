@@ -1,27 +1,30 @@
 let pts = [];
 let pt1;
 let pt2;
-
-let pt_num = 40;
-let seed = 1561;
-let circleMin = 1;
-let circleMax = 400;
+let pt_num;
+let seed;
+let circleMin;
+let circleMax;
+let widthOffset;
+let heightOffset;
 
 let BACKGROUND = (0, 0, 0);
 let MOVE_SPEED = 1;
-let WIDTH_OFFSET = 50;
-let HEIGHT_OFFSET = 50;
 let LINE_ALPHA = 1;
 let COLOR_MIN = 0;
 let COLOR_MAX = 255;
 
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(getCanvasSize(), getCanvasSize());
   background(BACKGROUND);
   angleMode(DEGREES);
   randomSeed(seed);
   strokeWeight(2);
 
+  widthOffset = getCanvasOffset();
+  heightOffset = getCanvasOffset();
+
+  resetLoop();
   makePointArray();
 }
 
@@ -43,27 +46,34 @@ function draw() {
 
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
+    // stop loop
     noLoop();
   } else if (keyCode === RIGHT_ARROW) {
+    // start loop
     loop();
-  } else if (keyCode === UP_ARROW) {
-    seed = random(1000);
-    pt_num = floor(random(20, 150));
-    circleMin = random(1, 200);
-    circleMax = random(200, 500);
-
+  } else if (keyCode === UP_ARROW || keyCode === 32) {
+    // reset loop and update
+    resetLoop();
     makePointArray();
     background(BACKGROUND);
   } else if (keyCode === DOWN_ARROW) {
+    // save img "emerging_mesh_date_time.png"
     now = getCurrentTime();
     save("emerging_mesh_" + now + ".png");
   }
 }
 
+function touchStarted() {
+  // reset loop and update
+  resetLoop();
+  makePointArray();
+  background(BACKGROUND);
+}
+
 class SetPoint {
   constructor() {
-    this.centerX = random(WIDTH_OFFSET, width - WIDTH_OFFSET);
-    this.centerY = random(HEIGHT_OFFSET, height - HEIGHT_OFFSET);
+    this.centerX = random(widthOffset, width - widthOffset);
+    this.centerY = random(heightOffset, height - heightOffset);
     this.degree = random(360);
     this.radius = random(circleMin, circleMax);
     this.r = floor(random(COLOR_MIN, COLOR_MAX));
@@ -105,4 +115,32 @@ const getCurrentTime = () => {
   const Sec = str(now.getSeconds()).padStart(2, "0");
 
   return (time = "_" + Year + Month + Day + "_" + Hour + Min + Sec);
+};
+
+const resetLoop = () => {
+  seed = random(1000);
+  pt_num = floor(random(20, 80));
+  circleMin = random(1, 300);
+  circleMax = random(200, 600);
+};
+
+const getDisplayMin = () => {
+  let wid = displayWidth;
+  let hei = displayHeight;
+
+  return wid > hei ? hei : wid;
+};
+
+const getCanvasSize = () => {
+  let size = getDisplayMin();
+  size = size * 0.85;
+
+  return size;
+};
+
+const getCanvasOffset = () => {
+  let offset = getDisplayMin();
+  offset = offset * 0.1;
+
+  return offset;
 };
