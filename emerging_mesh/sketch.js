@@ -1,22 +1,29 @@
 let pts = [];
-let pt_num = 500;
 let pt1;
 let pt2;
+
+let pt_num = 40;
 let MOVE_SPEED = 1;
-let WIDTH_OFFSET = -500;
-let HEIGHT_OFFSET = -500;
+let WIDTH_OFFSET = 0;
+let HEIGHT_OFFSET = 180;
+let LINE_ALPHA = 1;
+let CIRCLE_MIN = 1;
+let CIRCLE_MAX = 400;
+let COLOR_MIN = 0;
+let COLOR_MAX = 255;
+let RANDOM_SEED = 10;
 
 function setup() {
   createCanvas(1500, 500);
   background(0);
-  // stroke(255, 255, 255, 1);
   angleMode(DEGREES);
+  randomSeed(RANDOM_SEED);
+  strokeWeight(1);
 
   for (let i = 0; i < pt_num; i++) {
     pt = new SetPoint();
     pts.push(pt);
   }
-  noLoop();
 }
 
 function draw() {
@@ -29,7 +36,7 @@ function draw() {
     let pt2 = pts[i];
 
     push();
-    stroke(pt1.r, pt1.g, pt1.b, 1);
+    stroke(pt1.r, pt1.g, pt1.b, LINE_ALPHA);
     line(pt1.x, pt1.y, pt2.x, pt2.y);
     pop();
   }
@@ -42,9 +49,9 @@ function keyPressed() {
     loop();
   } else if (keyCode === DOWN_ARROW) {
     const date = new Date();
-    const timeStamp =  date.getTime()
+    const timeStamp = date.getTime();
     // console.log(timeStamp)
-    save("twitter_header_" + timeStamp);
+    save("emerging_mesh_" + RANDOM_SEED + "_" + timeStamp);
   }
 }
 
@@ -53,10 +60,10 @@ class SetPoint {
     this.centerX = random(WIDTH_OFFSET, width - WIDTH_OFFSET);
     this.centerY = random(HEIGHT_OFFSET, height - HEIGHT_OFFSET);
     this.degree = random(360);
-    this.radius = random(1, 20);
-    this.r = floor(random(0, 255));
-    this.g = floor(random(0, 255));
-    this.b = floor(random(0, 255));
+    this.radius = random(CIRCLE_MIN, CIRCLE_MAX);
+    this.r = floor(random(COLOR_MIN, COLOR_MAX));
+    this.g = floor(random(COLOR_MIN, COLOR_MAX));
+    this.b = floor(random(COLOR_MIN, COLOR_MAX));
   }
 
   setPointOrigin() {
