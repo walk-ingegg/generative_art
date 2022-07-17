@@ -55,9 +55,8 @@ function keyPressed() {
     makePointArray();
     background(BACKGROUND);
   } else if (keyCode === DOWN_ARROW) {
-    const date = new Date();
-    const timeStamp = date.getTime();
-    save("emerging_mesh_" + seed + "_" + timeStamp + ".png");
+    now = getCurrentTime();
+    save("emerging_mesh_" + now + ".png");
   }
 }
 
@@ -92,4 +91,18 @@ const makePointArray = () => {
     pt = new SetPoint();
     pts.push(pt);
   }
+};
+
+const getCurrentTime = () => {
+  let time;
+  const now = new Date();
+
+  const Year = now.getFullYear();
+  const Month = str(now.getMonth() + 1).padStart(2, "0");
+  const Day = str(now.getDate()).padStart(2, "0");
+  const Hour = str(now.getHours()).padStart(2, "0");
+  const Min = str(now.getMinutes()).padStart(2, "0");
+  const Sec = str(now.getSeconds()).padStart(2, "0");
+
+  return (time = "_" + Year + Month + Day + "_" + Hour + Min + Sec);
 };
