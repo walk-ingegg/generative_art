@@ -54,8 +54,6 @@ function keyPressed() {
 
     makePointArray();
     background(BACKGROUND);
-    console.log(seed);
-    console.log(pt_num);
   } else if (keyCode === DOWN_ARROW) {
     const date = new Date();
     const timeStamp = date.getTime();
