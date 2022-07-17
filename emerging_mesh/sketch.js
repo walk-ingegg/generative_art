@@ -43,10 +43,13 @@ function draw() {
 
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
+    // stop loop
     noLoop();
   } else if (keyCode === RIGHT_ARROW) {
+    // start loop
     loop();
-  } else if (keyCode === UP_ARROW) {
+  } else if (keyCode === UP_ARROW || keyCode === 32) {
+    // reset loop and update
     seed = random(1000);
     pt_num = floor(random(20, 150));
     circleMin = random(1, 200);
@@ -55,6 +58,7 @@ function keyPressed() {
     makePointArray();
     background(BACKGROUND);
   } else if (keyCode === DOWN_ARROW) {
+    // save img "emerging_mesh_date_time.png"
     now = getCurrentTime();
     save("emerging_mesh_" + now + ".png");
   }
