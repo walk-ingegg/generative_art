@@ -3,27 +3,26 @@ let pt1;
 let pt2;
 
 let pt_num = 40;
+let seed = 1561;
+let circleMin = 1;
+let circleMax = 400;
+
+let BACKGROUND = (0, 0, 0);
 let MOVE_SPEED = 1;
-let WIDTH_OFFSET = 0;
-let HEIGHT_OFFSET = 180;
+let WIDTH_OFFSET = 50;
+let HEIGHT_OFFSET = 50;
 let LINE_ALPHA = 1;
-let CIRCLE_MIN = 1;
-let CIRCLE_MAX = 400;
 let COLOR_MIN = 0;
 let COLOR_MAX = 255;
-let RANDOM_SEED = 10;
 
 function setup() {
-  createCanvas(1500, 500);
-  background(0);
+  createCanvas(1000, 1000);
+  background(BACKGROUND);
   angleMode(DEGREES);
-  randomSeed(RANDOM_SEED);
-  strokeWeight(1);
+  randomSeed(seed);
+  strokeWeight(2);
 
-  for (let i = 0; i < pt_num; i++) {
-    pt = new SetPoint();
-    pts.push(pt);
-  }
+  makePointArray();
 }
 
 function draw() {
@@ -47,11 +46,20 @@ function keyPressed() {
     noLoop();
   } else if (keyCode === RIGHT_ARROW) {
     loop();
+  } else if (keyCode === UP_ARROW) {
+    seed = random(1000);
+    pt_num = floor(random(20, 150));
+    circleMin = random(1, 200);
+    circleMax = random(200, 500);
+
+    makePointArray();
+    background(BACKGROUND);
+    console.log(seed);
+    console.log(pt_num);
   } else if (keyCode === DOWN_ARROW) {
     const date = new Date();
     const timeStamp = date.getTime();
-    // console.log(timeStamp)
-    save("emerging_mesh_" + RANDOM_SEED + "_" + timeStamp);
+    save("emerging_mesh_" + seed + "_" + timeStamp + ".png");
   }
 }
 
@@ -60,7 +68,7 @@ class SetPoint {
     this.centerX = random(WIDTH_OFFSET, width - WIDTH_OFFSET);
     this.centerY = random(HEIGHT_OFFSET, height - HEIGHT_OFFSET);
     this.degree = random(360);
-    this.radius = random(CIRCLE_MIN, CIRCLE_MAX);
+    this.radius = random(circleMin, circleMax);
     this.r = floor(random(COLOR_MIN, COLOR_MAX));
     this.g = floor(random(COLOR_MIN, COLOR_MAX));
     this.b = floor(random(COLOR_MIN, COLOR_MAX));
@@ -79,3 +87,11 @@ class SetPoint {
     this.degree += MOVE_SPEED;
   }
 }
+
+const makePointArray = () => {
+  pts = [];
+  for (let i = 0; i < pt_num; i++) {
+    pt = new SetPoint();
+    pts.push(pt);
+  }
+};
