@@ -1,11 +1,10 @@
 let pts = [];
 let pt1;
 let pt2;
-
-let pt_num = 40;
-let seed = 1561;
-let circleMin = 1;
-let circleMax = 400;
+let pt_num;
+let seed;
+let circleMin;
+let circleMax;
 
 let BACKGROUND = (0, 0, 0);
 let MOVE_SPEED = 1;
@@ -22,6 +21,7 @@ function setup() {
   randomSeed(seed);
   strokeWeight(2);
 
+  resetLoop();
   makePointArray();
 }
 
@@ -50,11 +50,7 @@ function keyPressed() {
     loop();
   } else if (keyCode === UP_ARROW || keyCode === 32) {
     // reset loop and update
-    seed = random(1000);
-    pt_num = floor(random(20, 150));
-    circleMin = random(1, 200);
-    circleMax = random(200, 500);
-
+    resetLoop();
     makePointArray();
     background(BACKGROUND);
   } else if (keyCode === DOWN_ARROW) {
@@ -62,6 +58,13 @@ function keyPressed() {
     now = getCurrentTime();
     save("emerging_mesh_" + now + ".png");
   }
+}
+
+function touchStarted() {
+  // reset loop and update
+  resetLoop();
+  makePointArray();
+  background(BACKGROUND);
 }
 
 class SetPoint {
@@ -109,4 +112,11 @@ const getCurrentTime = () => {
   const Sec = str(now.getSeconds()).padStart(2, "0");
 
   return (time = "_" + Year + Month + Day + "_" + Hour + Min + Sec);
+};
+
+const resetLoop = () => {
+  seed = random(1000);
+  pt_num = floor(random(20, 80));
+  circleMin = random(1, 300);
+  circleMax = random(200, 600);
 };
