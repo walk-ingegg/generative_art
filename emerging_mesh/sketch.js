@@ -15,14 +15,14 @@ let COLOR_MIN = 0;
 let COLOR_MAX = 255;
 
 function setup() {
-  createCanvas(getCanvasSize()[0], getCanvasSize()[1]);
+  createCanvas(getCanvasSize(), getCanvasSize());
   background(BACKGROUND);
   angleMode(DEGREES);
   randomSeed(seed);
   strokeWeight(2);
 
-  widthOffset = getCanvasOffset()[0];
-  heightOffset = getCanvasOffset()[1];
+  widthOffset = getCanvasOffset();
+  heightOffset = getCanvasOffset();
 
   resetLoop();
   makePointArray();
@@ -125,29 +125,22 @@ const resetLoop = () => {
 };
 
 const getDisplayMin = () => {
-  let wid = getCanvasSize()[0];
-  let hei = getCanvasSize()[1];
+  let wid = displayWidth;
+  let hei = displayHeight;
 
   return wid > hei ? hei : wid;
 };
 
 const getCanvasSize = () => {
-  let wid = displayWidth;
-  let hei = displayHeight;
+  let size = getDisplayMin();
+  size = size * 0.85;
 
-  wid -= wid * 0.2;
-  hei -= hei * 0.2;
-
-  return [wid, hei];
+  return size;
 };
 
 const getCanvasOffset = () => {
-  let min = getDisplayMin();
-  let wid = getCanvasSize()[0];
-  let hei = getCanvasSize()[1];
+  let offset = getDisplayMin();
+  offset = offset * 0.1;
 
-  wid = (wid - min * 0.9) / 2;
-  hei = (hei - min * 0.9) / 2;
-
-  return [wid, hei];
+  return offset;
 };
