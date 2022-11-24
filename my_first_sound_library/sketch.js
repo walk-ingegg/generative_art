@@ -1,13 +1,41 @@
-const BACKGROUND = (125);
+// setup前に音源を読み込む
+function preload() {
+  sound = loadSound("./mixkit-flock-of-wild-geese-20.wav");
+}
 
 function setup() {
-  createCanvas(800, 800);
-  background(BACKGROUND);
+  canvas = createCanvas(600, 600);
+  // canvasをクリックすると音が鳴る
+  canvas.mousePressed(onClickPlay);
 
+  amplitude = new p5.Amplitude();
 }
 
 function draw() {
-	ellipse(400, 400, 400, 200);
+  background(0);
+
+  const level = amplitude.getLevel();
+  const peak = sound.getPeaks(1);
+
+  text(level, 100, 100);
+
+  textSize(32);
+  fill(255);
+
+  if (level > peak - 0.2) {
+    text("Volume exceeded peak - 0.2", 50, 50);
+  } else {
+    text("volume less than peak - 0.2", 50, 150);
+  }
+}
+
+// 音源を鳴らす
+function onClickPlay() {
+  if (sound.isPlaying()) {
+    sound.stop();
+    return;
+  }
+  sound.play();
 }
 
 // function keyPressed() {
