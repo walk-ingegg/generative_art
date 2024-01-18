@@ -77,7 +77,7 @@ const collision = (pt1, pt2) => {
     Math.pow(pt1.x - pt2.x, 2) + Math.pow(pt1.y - pt2.y, 2)
   );
 
-  const dist = center_dist - (pt1.size + pt2.size) / 2;
+  const dist = center_dist - (pt1.size + pt2.size);
 
   return dist <= 0 ? true : false;
 };
@@ -90,18 +90,10 @@ const homogenizeSpeed = (pt1, pt2) => {
   const x_new = (x1 + x2) / 2;
   const y_new = (y1 + y2) / 2;
 
-  const homoSpeedX = (Math.abs(x1) + Math.abs(x2)) / 2;
-  const homoSpeedY = (Math.abs(y1) + Math.abs(y2)) / 2;
-
   pt1.speedX = x_new;
   pt1.speedY = y_new;
   pt2.speedX = x_new;
   pt2.speedY = y_new;
-
-  // pt1.speedX = -Math.sign(x1) * homoSpeedX;
-  // pt1.speedY = -Math.sign(y1) * homoSpeedY;
-  // pt2.speedX = -Math.sign(x2) * homoSpeedX;
-  // pt2.speedY = -Math.sign(y2) * homoSpeedY;
 };
 
 const homogenizeColor = (pt1, pt2) => {
