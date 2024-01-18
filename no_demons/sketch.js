@@ -87,21 +87,21 @@ const homogenizeSpeed = (pt1, pt2) => {
   const y1 = pt1.speedY;
   const x2 = pt2.speedX;
   const y2 = pt2.speedY;
-  // const x_new = (x1 + x2) / 2;
-  // const y_new = (y1 + y2) / 2;
-
-  // pt1.speedX = x_new;
-  // pt1.speedY = y_new;
-  // pt2.speedX = x_new;
-  // pt2.speedY = y_new;
+  const x_new = (x1 + x2) / 2;
+  const y_new = (y1 + y2) / 2;
 
   const homoSpeedX = (Math.abs(x1) + Math.abs(x2)) / 2;
   const homoSpeedY = (Math.abs(y1) + Math.abs(y2)) / 2;
 
-  pt1.speedX = -Math.sign(x1) * homoSpeedX;
-  pt1.speedY = -Math.sign(y1) * homoSpeedY;
-  pt2.speedX = -Math.sign(x2) * homoSpeedX;
-  pt2.speedY = -Math.sign(y2) * homoSpeedY;
+  pt1.speedX = x_new;
+  pt1.speedY = y_new;
+  pt2.speedX = x_new;
+  pt2.speedY = y_new;
+
+  // pt1.speedX = -Math.sign(x1) * homoSpeedX;
+  // pt1.speedY = -Math.sign(y1) * homoSpeedY;
+  // pt2.speedX = -Math.sign(x2) * homoSpeedX;
+  // pt2.speedY = -Math.sign(y2) * homoSpeedY;
 };
 
 const homogenizeColor = (pt1, pt2) => {
@@ -114,7 +114,7 @@ const homogenizeColor = (pt1, pt2) => {
 };
 
 const makeStarsArray = () => {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 3000; i++) {
     stars.push(new Star());
   }
 };
