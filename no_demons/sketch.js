@@ -1,15 +1,20 @@
 let stars = [];
-let seed = 999;
+let seed;
+let start_area_offset;
 
 let BACKGROUND = (0, 0, 0);
+let STAR_NUM = 1500;
+let START_AREA_OFFSET = 0;
 let COLOR_MIN = 0;
 let COLOR_MAX = 255;
-let ALPHA_MIN = 0;
+let ALPHA_MIN = 200;
 let ALPHA_MAX = 255;
-let SIZE_MIN = 1;
-let SIZE_MAX = 15;
-let SPEED_MIN = -5;
-let SPEED_MAX = 5;
+let SIZE_MIN = 0.5;
+let SIZE_MAX = 10;
+let SPEED_MIN_X = -1;
+let SPEED_MAX_X = 1;
+let SPEED_MIN_Y = -1;
+let SPEED_MAX_Y = 1;
 
 function setup() {
   createCanvas(getCanvasSize(), getCanvasSize());
@@ -19,6 +24,8 @@ function setup() {
   strokeWeight(2);
   frameRate(60);
 
+  seed = random(10000);
+  start_area_offset = getCanvasOffset();
   makeStarsArray();
 }
 
@@ -29,6 +36,8 @@ function draw() {
     for (let i = 0; i < stars.length; i++) {
       if (collision(star, stars[i])) {
         homogenizeSpeed(star, stars[i]);
+        homogenizeColor(star, stars[i]);
+        homogenizeSize(star, stars[i]);
       }
     }
   });
@@ -37,15 +46,15 @@ function draw() {
 
 class Star {
   constructor() {
-    this.x = random(0, width);
-    this.y = random(0, height);
+    this.x = random(start_area_offset, width - start_area_offset);
+    this.y = random(start_area_offset, height - start_area_offset);
     this.r = random(COLOR_MIN, COLOR_MAX);
     this.g = random(COLOR_MIN, COLOR_MAX);
     this.b = random(COLOR_MIN, COLOR_MAX);
     this.alpha = random(ALPHA_MIN, ALPHA_MAX);
     this.size = random(SIZE_MIN, SIZE_MAX);
-    this.speedX = random(SPEED_MIN, SPEED_MAX);
-    this.speedY = random(SPEED_MIN, SPEED_MAX);
+    this.speedX = random(SPEED_MIN_X, SPEED_MAX_X);
+    this.speedY = random(SPEED_MIN_Y, SPEED_MAX_Y);
   }
 
   drawStar() {
@@ -77,7 +86,7 @@ const collision = (pt1, pt2) => {
     Math.pow(pt1.x - pt2.x, 2) + Math.pow(pt1.y - pt2.y, 2)
   );
 
-  const dist = center_dist - (pt1.size + pt2.size);
+  const dist = center_dist - (pt1.size + pt2.size) / 2;
 
   return dist <= 0 ? true : false;
 };
@@ -85,28 +94,46 @@ const collision = (pt1, pt2) => {
 const homogenizeSpeed = (pt1, pt2) => {
   const x1 = pt1.speedX;
   const y1 = pt1.speedY;
+  const size1 = pt1.size;
   const x2 = pt2.speedX;
   const y2 = pt2.speedY;
-  const x_new = (x1 + x2) / 2;
-  const y_new = (y1 + y2) / 2;
+  const size2 = pt2.size;
 
-  pt1.speedX = x_new;
-  pt1.speedY = y_new;
-  pt2.speedX = x_new;
-  pt2.speedY = y_new;
+  const totalMass = size1 + size2;
+  const v1x = ((size1 - size2) * x1 + 2 * size2 * x2) / totalMass;
+  const v1y = ((size1 - size2) * y1 + 2 * size2 * y2) / totalMass;
+  const v2x = ((size2 - size1) * x2 + 2 * size1 * x1) / totalMass;
+  const v2y = ((size2 - size1) * y2 + 2 * size1 * y1) / totalMass;
+
+  pt1.speedX = v1x;
+  pt1.speedY = v1y;
+  pt2.speedX = v2x;
+  pt2.speedY = v2y;
 };
 
 const homogenizeColor = (pt1, pt2) => {
-  let r1 = pt1.r;
-  let g1 = pt1.g;
-  let b1 = pt1.b;
-  let r2 = pt2.r;
-  let g2 = pt2.g;
-  let b2 = pt2.b;
+  const randomAddR = random(-0.1, 0.11);
+  const randomAddG = random(-0.1, 0.11);
+  const randomAddB = random(-0.1, 0.11);
+
+  pt1.r = (pt1.r + pt2.r) / 2 + randomAddR;
+  pt1.g = (pt1.g + pt2.g) / 2 + randomAddG;
+  pt1.b = (pt1.b + pt2.b) / 2 + randomAddB;
+  pt1.alpha = (pt1.alpha + pt2.alpha) / 2;
+
+  pt2.r = (pt1.r + pt2.r) / 2 + randomAddR;
+  pt2.g = (pt1.g + pt2.g) / 2 + randomAddG;
+  pt2.b = (pt1.b + pt2.b) / 2 + randomAddB;
+  pt2.alpha = (pt1.alpha + pt2.alpha) / 2;
+};
+
+const homogenizeSize = (pt1, pt2) => {
+  pt1.size = (pt1.size + pt2.size) / 2;
+  pt2.size = (pt1.size + pt2.size) / 2;
 };
 
 const makeStarsArray = () => {
-  for (let i = 0; i < 3000; i++) {
+  for (let i = 0; i < STAR_NUM; i++) {
     stars.push(new Star());
   }
 };
@@ -123,4 +150,11 @@ const getCanvasSize = () => {
   size = size * 0.85;
 
   return size;
+};
+
+const getCanvasOffset = () => {
+  let offset = getDisplayMin();
+  offset = offset * START_AREA_OFFSET;
+
+  return offset;
 };
