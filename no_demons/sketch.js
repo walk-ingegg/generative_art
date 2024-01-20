@@ -3,18 +3,19 @@ let seed;
 let start_area_offset;
 
 let BACKGROUND = (0, 0, 0);
-let STAR_NUM = 1500;
+let FRAME_RATE = 20;
+let STAR_NUM = 500;
 let START_AREA_OFFSET = 0;
 let COLOR_MIN = 0;
 let COLOR_MAX = 255;
-let ALPHA_MIN = 200;
+let ALPHA_MIN = 250;
 let ALPHA_MAX = 255;
 let SIZE_MIN = 0.5;
-let SIZE_MAX = 10;
-let SPEED_MIN_X = -1;
-let SPEED_MAX_X = 1;
-let SPEED_MIN_Y = -1;
-let SPEED_MAX_Y = 1;
+let SIZE_MAX = 9.0;
+let SPEED_MIN_X = -1.5;
+let SPEED_MAX_X = 1.5;
+let SPEED_MIN_Y = -1.5;
+let SPEED_MAX_Y = 1.5;
 
 function setup() {
   createCanvas(getCanvasSize(), getCanvasSize());
@@ -22,7 +23,7 @@ function setup() {
   angleMode(DEGREES);
   randomSeed(seed);
   strokeWeight(2);
-  frameRate(60);
+  frameRate(FRAME_RATE);
 
   seed = random(10000);
   start_area_offset = getCanvasOffset();
@@ -30,7 +31,8 @@ function setup() {
 }
 
 function draw() {
-  background(BACKGROUND);
+  background(0, 0, 0, 100);
+
   stars.forEach((star) => {
     star.update();
     for (let i = 0; i < stars.length; i++) {
@@ -41,7 +43,19 @@ function draw() {
       }
     }
   });
-  console.log("count: ", frameCount);
+  // console.log("count: ", frameCount);
+}
+
+function mousePressed() {
+  resetLoop();
+  makeStarsArray();
+  background(BACKGROUND);
+}
+
+function touchStarted() {
+  resetLoop();
+  makeStarsArray();
+  background(BACKGROUND);
 }
 
 class Star {
@@ -86,18 +100,18 @@ const collision = (pt1, pt2) => {
     Math.pow(pt1.x - pt2.x, 2) + Math.pow(pt1.y - pt2.y, 2)
   );
 
-  const dist = center_dist - (pt1.size + pt2.size) / 2;
+  const dist = center_dist - (pt1.size + pt2.size) / 1.5;
 
-  return dist <= 0 ? true : false;
+  return dist <= 0;
 };
 
 const homogenizeSpeed = (pt1, pt2) => {
   const x1 = pt1.speedX;
   const y1 = pt1.speedY;
-  const size1 = pt1.size;
+  const size1 = Math.pow(pt1.size, 20);
   const x2 = pt2.speedX;
   const y2 = pt2.speedY;
-  const size2 = pt2.size;
+  const size2 = Math.pow(pt2.size, 20);
 
   const totalMass = size1 + size2;
   const v1x = ((size1 - size2) * x1 + 2 * size2 * x2) / totalMass;
@@ -136,6 +150,12 @@ const makeStarsArray = () => {
   for (let i = 0; i < STAR_NUM; i++) {
     stars.push(new Star());
   }
+};
+
+const resetLoop = () => {
+  seed = random(1000);
+  frameCount = 0;
+  stars = [];
 };
 
 const getDisplayMin = () => {
